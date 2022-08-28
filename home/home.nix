@@ -73,6 +73,10 @@ let
 
     # fixes the `ar` error required by cabal
     binutils-unwrapped
+
+    # openconnect
+    openconnect
+    networkmanager-openconnect
   ];
 
   goPkgs = with pkgs; [
@@ -88,9 +92,10 @@ let
   ];
 
   gnomePkgs = with pkgs.gnome; [
-    eog            # image viewer
-    evince         # pdf reader
-    nautilus       # file manager
+    eog                        # image viewer
+    evince                     # pdf reader
+    nautilus                   # file manager
+    networkmanager-openconnect # networkmanager
   ];
 
   haskellPkgs = with pkgs.haskellPackages; [
