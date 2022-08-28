@@ -1,0 +1,15 @@
+[
+  #./alacritty
+  #./autorandr
+  #./browsers/firefox.nix
+  #./dconf
+  #./git
+  #./fish
+  #./neovim-ide
+  #./nheko
+  #./orage
+  #./rofi
+  #./signal
+  #./xmonad
+  #./yubikey
+]

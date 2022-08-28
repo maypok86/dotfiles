@@ -3,6 +3,11 @@
 # Shows the output of every command
 set +x
 
+rebuild_home() {
+  nix build .#homeConfigurations.maypok-home.activationPackage
+  HOME_MANAGER_BACKUP_EXT=bak result/activate
+}
+
 rebuild_system() {
   sudo nixos-rebuild switch --flake .#huawei-amd
 }
@@ -21,6 +26,8 @@ case $1 in
     restart_X;;
   "update-fish")
     fish -c fish_update_completions;;
+  "home")
+    rebuild_home;;
   "system")
     rebuild_system;;
   "vm")
