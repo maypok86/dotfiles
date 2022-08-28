@@ -2,7 +2,7 @@
   ./alacritty
   #./autorandr
   #./browsers/firefox.nix
-  #./dconf
+  ./dconf
   ./git
   ./fish
   ./neovim-ide
