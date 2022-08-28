@@ -29,6 +29,7 @@ let
     gimp                 # gnu image manipulation program
     glow                 # terminal markdown viewer
     gnomecast            # chromecast local files
+    gnumake              # GNU make utility
     hyperfine            # command-line benchmarking tool
     insomnia             # rest client with graphql support
     jitsi-meet-electron  # open source video calls and chat
