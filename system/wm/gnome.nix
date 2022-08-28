@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 
 {
-  programs.gnupg.agent.pinentryFlavor = "gnome";
+  programs.gnupg.agent.pinentryFlavor = "gnome3";
 
   # Enable the X11 windowing system.
   services = {

@@ -4,7 +4,7 @@
 set +x
 
 rebuild_system() {
-  sudo nixos-rebuild switch --flake .#
+  sudo nixos-rebuild switch --flake .#huawei-amd
 }
 
 rebuild_vm() {
