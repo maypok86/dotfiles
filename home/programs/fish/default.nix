@@ -14,6 +14,10 @@ let
     set -g theme_color_scheme solarized
   '';
 
+  pathConfig = ''
+    set PATH $PATH /home/maypok/go/bin
+  '';
+
   custom = pkgs.callPackage ./plugins.nix {};
 
   fenv = {
@@ -24,7 +28,7 @@ let
   fishConfig = ''
     bind \t accept-autosuggestion
     set fish_greeting
-  '' + fzfConfig + themeConfig;
+  '' + fzfConfig + themeConfig + pathConfig;
 in
 {
   programs.fish = {
