@@ -2,12 +2,25 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
+{ config, lib, pkgs, inputs, ... }:
 
+let
+  customFonts = pkgs.nerdfonts.override {
+    fonts = [
+      "JetBrainsMono"
+      "Iosevka"
+    ];
+  };
+
+  myfonts = pkgs.callPackage fonts/default.nix { inherit pkgs; };
+in
 {
   imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
+    [
+      # Window manager
+      ./wm/gnome.nix
+      # Binary cache
+      #./cachix.nix
     ];
 
   # Bootloader.
@@ -16,107 +29,175 @@
   boot.loader.efi.efiSysMountPoint = "/boot/efi";
 
   networking.hostName = "nixos"; # Define your hostname.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+
+  networking = {
+    # Enables wireless support and openvpn via network manager.
+    networkmanager = {
+      enable   = true;
+      plugins = [ pkgs.networkmanager-openvpn ];
+    };
+
+    # The global useDHCP flag is deprecated, therefore explicitly set to false here.
+    # Per-interface useDHCP will be mandatory in the future, so this generated config
+    # replicates the default behaviour.
+    useDHCP = false;
+  };
 
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
-  # Enable networking
-  networking.networkmanager.enable = true;
+  # Select internationalisation properties.
+  i18n.defaultLocale = "en_US.UTF-8";
 
   # Set your time zone.
   time.timeZone = "Europe/Moscow";
 
-  # Select internationalisation properties.
-  i18n.defaultLocale = "en_US.utf8";
-
-  i18n.extraLocaleSettings = {
-    LC_ADDRESS = "ru_RU.utf8";
-    LC_IDENTIFICATION = "ru_RU.utf8";
-    LC_MEASUREMENT = "ru_RU.utf8";
-    LC_MONETARY = "ru_RU.utf8";
-    LC_NAME = "ru_RU.utf8";
-    LC_NUMERIC = "ru_RU.utf8";
-    LC_PAPER = "ru_RU.utf8";
-    LC_TELEPHONE = "ru_RU.utf8";
-    LC_TIME = "ru_RU.utf8";
-  };
-
-  # Enable the X11 windowing system.
-  services.xserver.enable = true;
-
-  # Enable the GNOME Desktop Environment.
-  services.xserver.displayManager.gdm.enable = true;
-  services.xserver.desktopManager.gnome.enable = true;
-
-  # Configure keymap in X11
-  services.xserver = {
-    layout = "us";
-    xkbVariant = "";
-  };
-
-  # Enable CUPS to print documents.
-  services.printing.enable = true;
-
-  # Enable sound with pipewire.
-  sound.enable = true;
-  hardware.pulseaudio.enable = false;
-  security.rtkit.enable = true;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-    # If you want to use JACK applications, uncomment this
-    #jack.enable = true;
-
-    # use the example session manager (no others are packaged yet so this is enabled by default,
-    # no need to redefine it in your config for now)
-    #media-session.enable = true;
-  };
-
-  # Enable touchpad support (enabled default in most desktopManager).
-  # services.xserver.libinput.enable = true;
-
-  # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.maypok = {
-    isNormalUser = true;
-    description = "maypok";
-    extraGroups = [ "networkmanager" "wheel" ];
-  };
-
-  # Allow unfree packages
-  nixpkgs.config.allowUnfree = true;
-
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-     wget
-     vim
-     firefox
-     zsh
-     gimp
+    firejail
+    vim
+    wget
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
+  programs.gnupg.agent = {
+    enable           = true;
+    enableSSHSupport = true;
+  };
 
   # List services that you want to enable:
-
-  # Enable the OpenSSH daemon.
-  # services.openssh.enable = true;
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
+  networking.firewall.enable = false;
+
+  # Enable Docker & VirtualBox support.
+  virtualisation = {
+    docker = {
+      enable = true;
+      autoPrune = {
+        enable = true;
+        dates = "weekly";
+      };
+    };
+
+    virtualbox.host = {
+      enable = false;
+      enableExtensionPack = false;
+    };
+  };
+
+  users.extraGroups.vboxusers.members = [ "maypok" ];
+
+  # Enable sound.
+  sound = {
+    enable = true;
+    mediaKeys.enable = true;
+  };
+
+  hardware.pulseaudio = {
+    enable = true;
+    package = pkgs.pulseaudioFull;
+  };
+
+  # Scanner backend
+  hardware.sane = {
+    enable = true;
+    extraBackends = [ pkgs.epkowa pkgs.sane-airscan ];
+  };
+
+  services = {
+    # Mount MTP devices
+    gvfs.enable = true;
+
+    # Enable the OpenSSH daemon.
+    openssh = {
+      enable = true;
+      allowSFTP = true;
+    };
+
+    # Yubikey smart card mode (CCID) and OTP mode (udev)
+    pcscd.enable = true;
+    udev.packages = [ pkgs.yubikey-personalization ];
+
+    # SSH daemon.
+    sshd.enable = true;
+
+    # Enable CUPS to print documents.
+    printing = {
+      enable = true;
+      drivers = [ pkgs.epson-escpr ];
+    };
+  };
+
+  # Making fonts accessible to applications.
+  fonts.fonts = with pkgs; [
+    customFonts
+    font-awesome
+    myfonts.flags-world-color
+    myfonts.icomoon-feather
+  ];
+
+  programs.fish.enable = true;
+
+  # Define a user account. Don't forget to set a password with ‘passwd’.
+  users.users.maypok = {
+    isNormalUser = true;
+    extraGroups  = [ "docker" "networkmanager" "wheel" "scanner" "lp" ]; # wheel for ‘sudo’.
+    shell        = pkgs.fish;
+  };
+
+  security = {
+    # Yubikey login & sudo
+    pam.yubico = {
+      enable = true;
+      debug = false;
+      mode = "challenge-response";
+    };
+
+    # Sudo custom prompt message
+    sudo.configFile = ''
+      Defaults lecture=always
+      Defaults lecture_file=${misc/groot.txt}
+    '';
+  };
+
+  nixpkgs.config.allowUnfree = true;
+
+  # Nix daemon config
+  nix = {
+    # Automate garbage collection
+    gc = {
+      automatic = true;
+      dates     = "weekly";
+      options   = "--delete-older-than 7d";
+    };
+
+    # Flakes settings
+    package = pkgs.nixFlakes;
+    registry.nixpkgs.flake = inputs.nixpkgs;
+
+    # Avoid unwanted garbage collection when using nix-direnv
+    extraOptions = ''
+      experimental-features = nix-command flakes
+      keep-outputs          = true
+      keep-derivations      = true
+    '';
+
+    settings = {
+      # Automate `nix store --optimise`
+      auto-optimise-store = true;
+
+      # Required by Cachix to be used as non-root user
+      trusted-users = [ "root" "maypok" ];
+    };
+  };
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

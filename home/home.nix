@@ -20,6 +20,8 @@
     enable = true;
   };
 
+  programs.go.enable = true;
+
   services.gpg-agent = {
     enable = true;
     pinentryFlavor = "qt";
