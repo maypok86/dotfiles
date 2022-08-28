@@ -4,7 +4,7 @@
   #./browsers/firefox.nix
   #./dconf
   #./git
-  #./fish
+  ./fish
   #./neovim-ide
   #./nheko
   #./orage
