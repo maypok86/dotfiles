@@ -22,6 +22,8 @@ let
       "ssh://git@github.com".pushInsteadOf = "gh:";
       "https://gitlab.com/".insteadOf = "gl:";
       "ssh://git@gitlab.com".pushInsteadOf = "gl:";
+      "ssh://git@gitlab.wildberries.ru".insteadOf = "https://gitlab.wildberries.ru";
+      "ssh://git@git.wildberries.ru".insteadOf = "https://git.wildberries.ru";
     };
   };
 
