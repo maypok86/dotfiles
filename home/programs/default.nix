@@ -3,7 +3,7 @@
   #./autorandr
   #./browsers/firefox.nix
   #./dconf
-  #./git
+  ./git
   ./fish
   #./neovim-ide
   #./nheko
