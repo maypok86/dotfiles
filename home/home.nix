@@ -165,6 +165,8 @@ in
       nix-direnv.enable = true;
     };
 
+    go.enable = true;
+
     fzf = {
       enable = true;
       enableFishIntegration = true;
