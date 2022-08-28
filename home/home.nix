@@ -75,6 +75,11 @@ let
     binutils-unwrapped
   ];
 
+  goPkgs = with pkgs; [
+    go    # go compiler
+    gopls # go lsp server
+  ];
+
   gitPkgs = with pkgs.gitAndTools; [
     diff-so-fancy # git diff with colors
     git-crypt     # git files encryption
@@ -139,7 +144,7 @@ in
     inherit username homeDirectory;
     stateVersion = "22.05";
 
-    packages = defaultPkgs ++ gitPkgs ++ gnomePkgs ++ haskellPkgs ++ polybarPkgs ++ scripts ++ xmonadPkgs ++ yubiPkgs;
+    packages = defaultPkgs ++ goPkgs ++ gitPkgs ++ gnomePkgs ++ haskellPkgs ++ polybarPkgs ++ scripts ++ xmonadPkgs ++ yubiPkgs;
 
     sessionVariables = {
       DISPLAY = ":0";
@@ -165,8 +170,6 @@ in
       enable = true;
       nix-direnv.enable = true;
     };
-
-    go.enable = true;
 
     fzf = {
       enable = true;
