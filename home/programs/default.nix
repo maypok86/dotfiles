@@ -5,7 +5,7 @@
   #./dconf
   ./git
   ./fish
-  #./neovim-ide
+  ./neovim-ide
   #./nheko
   #./orage
   #./rofi
