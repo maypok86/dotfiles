@@ -29,7 +29,7 @@
         python = false;
         clang = false;
         ts = false;
-        go = false;
+        go = true;
       };
       vim.visuals = {
         enable = true;
