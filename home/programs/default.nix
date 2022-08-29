@@ -6,6 +6,7 @@
   ./git
   ./fish
   ./neovim-ide
+  ./tmux # Only for gnome
   #./nheko
   #./orage
   #./rofi
