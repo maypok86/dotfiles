@@ -80,6 +80,9 @@ let
 
     # Appimage
     appimage-run
+
+    # Nixops
+    nixopsUnstable
   ];
 
   goPkgs = with pkgs; [
