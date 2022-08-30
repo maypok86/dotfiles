@@ -77,6 +77,9 @@ let
     # openconnect
     openconnect
     networkmanager-openconnect
+
+    # Appimage
+    appimage-run
   ];
 
   goPkgs = with pkgs; [
