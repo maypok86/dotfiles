@@ -83,6 +83,8 @@ let
 
     # Nixops
     nixopsUnstable
+
+    jetbrains.goland
   ];
 
   goPkgs = with pkgs; [
