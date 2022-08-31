@@ -27,7 +27,6 @@ in
         '';
       }
     ];
-    shortcut = "a";
     terminal = "screen-256color";
   };
 }
