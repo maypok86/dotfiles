@@ -85,6 +85,9 @@ let
     nixopsUnstable
 
     jetbrains.goland
+
+    # font
+    hasklig
   ];
 
   goPkgs = with pkgs; [
