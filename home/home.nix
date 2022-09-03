@@ -115,6 +115,7 @@ let
   ];
 
   haskellPkgs = with pkgs.haskellPackages; [
+    stack
     brittany                # code formatter
     cabal2nix               # convert cabal projects to nix
     cabal-install           # package manager
