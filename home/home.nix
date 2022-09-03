@@ -92,6 +92,14 @@ let
     gopls # go lsp server
   ];
 
+  kubernetesPkgs = with pkgs; [
+    kubectl
+    kubernetes
+    minikube
+    kubernetes-helm
+    skaffold
+  ];
+
   gitPkgs = with pkgs.gitAndTools; [
     diff-so-fancy # git diff with colors
     git-crypt     # git files encryption
@@ -157,7 +165,7 @@ in
     inherit username homeDirectory;
     stateVersion = "22.05";
 
-    packages = defaultPkgs ++ goPkgs ++ gitPkgs ++ gnomePkgs ++ haskellPkgs ++ polybarPkgs ++ scripts ++ xmonadPkgs ++ yubiPkgs;
+    packages = defaultPkgs ++ kubernetesPkgs ++ goPkgs ++ gitPkgs ++ gnomePkgs ++ haskellPkgs ++ polybarPkgs ++ scripts ++ xmonadPkgs ++ yubiPkgs;
 
     sessionVariables = {
       DISPLAY = ":0";
