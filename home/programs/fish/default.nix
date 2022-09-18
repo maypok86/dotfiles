@@ -16,6 +16,7 @@ let
 
   pathConfig = ''
     set PATH $PATH /home/maypok/go/bin
+    set DIRENV_WARN_TIMEOUT 100s
   '';
 
   custom = pkgs.callPackage ./plugins.nix {};
